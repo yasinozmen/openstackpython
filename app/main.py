@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import settings
 from app.openstack_client import openstack_client
-from app import operations
+from app import operations, maintenance
 
 # FastAPI uygulamasını oluştur
 app = FastAPI(
@@ -38,6 +38,10 @@ app = FastAPI(
     * **Project** - Projeyi güncelle
     * **User** - Kullanıcıyı güncelle
     
+    ### 🔧 Maintenance Operations
+    * **Drain** - Hypervisor bakım modu (VM migration)
+    * **Hypervisor Status** - Kaynak kullanım bilgileri
+    
     ---
     
     **Deployment:** Controller Node (Localhost OpenStack API)
@@ -57,8 +61,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Operations router'ını ekle
+# Router'ları ekle
 app.include_router(operations.router)
+app.include_router(maintenance.router)
 
 @app.on_event("startup")
 async def startup_event():

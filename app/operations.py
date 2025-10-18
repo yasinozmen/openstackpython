@@ -360,13 +360,16 @@ async def create_vm(vm: VMCreate):
         
         networks = [{"uuid": vm.network_id}]
         
+        # Security groups formatını düzelt
+        sec_groups = [{"name": sg} for sg in vm.security_groups] if vm.security_groups else None
+        
         new_server = conn.compute.create_server(
             name=vm.name,
             image_id=vm.image_id,
             flavor_id=vm.flavor_id,
             networks=networks,
             key_name=vm.key_name,
-            security_groups=vm.security_groups
+            security_groups=sec_groups
         )
         
         # VM'in başlamasını bekle
